@@ -1,19 +1,21 @@
-require('dotenv').config();
-const {
-  default: makeWASocket,
+import 'dotenv/config';
+import makeWASocket, {
   DisconnectReason,
   useMultiFileAuthState,
   fetchLatestBaileysVersion,
   makeCacheableSignalKeyStore,
-} = require('@whiskeysockets/baileys');
-const { Boom } = require('@hapi/boom');
-const pino = require('pino');
-const path = require('path');
-const fs = require('fs');
-const { handleMessage } = require('./handler');
+} from '@whiskeysockets/baileys';
+import { Boom } from '@hapi/boom';
+import pino from 'pino';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { handleMessage } from './handler.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const AUTH_FOLDER = path.join(__dirname, '../auth');
 const logger = pino({ level: 'silent' });
+
 let retryCount = 0;
 const MAX_RETRY = 5;
 
@@ -21,9 +23,10 @@ async function startBot() {
   if (!fs.existsSync(AUTH_FOLDER)) {
     fs.mkdirSync(AUTH_FOLDER, { recursive: true });
   }
+
   const { state, saveCreds } = await useMultiFileAuthState(AUTH_FOLDER);
   const { version } = await fetchLatestBaileysVersion();
-  console.log('\n🤖 WhatsApp AI Bot - v' + version.join('.'));
+  console.log('WhatsApp AI Bot Starting - WA v' + version.join('.'));
 
   const sock = makeWASocket({
     version,
@@ -42,17 +45,17 @@ async function startBot() {
   if (!sock.authState.creds.registered) {
     const phoneNumber = process.env.PHONE_NUMBER;
     if (!phoneNumber) {
-      console.error('\nERROR: Isi PHONE_NUMBER di file .env!');
-      console.error('Contoh: PHONE_NUMBER=6281234567890\n');
+      console.error('ERROR: Isi PHONE_NUMBER di Railway Variables!');
       process.exit(1);
     }
     const cleanNumber = phoneNumber.replace(/[^0-9]/g, '');
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 3000));
     const code = await sock.requestPairingCode(cleanNumber);
     console.log('\n=====================================');
     console.log('PAIRING CODE: ' + code);
     console.log('=====================================');
-    console.log('Buka WhatsApp > Perangkat Tertaut > Tautkan dengan nomor telepon\n');
+    console.log('Buka WhatsApp > Perangkat Tertaut > Tautkan dengan nomor telepon');
+    console.log('Masukkan kode di atas, lalu tunggu...\n');
   }
 
   sock.ev.on('creds.update', saveCreds);
@@ -67,14 +70,14 @@ async function startBot() {
       if (shouldReconnect && retryCount < MAX_RETRY) {
         retryCount++;
         const delay = Math.min(3000 * retryCount, 30000);
-        console.log('Reconnect ke-' + retryCount + ' dalam ' + (delay/1000) + 's...');
+        console.log('Reconnect ke-' + retryCount + ' dalam ' + (delay / 1000) + 's...');
         setTimeout(startBot, delay);
       } else if (statusCode === DisconnectReason.loggedOut) {
-        console.log('Sesi habis. Hapus folder /auth dan restart.');
+        console.log('Sesi habis. Hapus isi folder /auth dan restart.');
       }
     } else if (connection === 'open') {
       retryCount = 0;
-      console.log('\n✅ Bot terhubung dan siap menerima pesan!\n');
+      console.log('Bot terhubung dan siap menerima pesan!');
     }
   });
 
