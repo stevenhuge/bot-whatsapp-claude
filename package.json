@@ -1,8 +1,6 @@
 {
   "name": "whatsapp-ai-bot",
   "version": "1.0.0",
-  "description": "WhatsApp Bot dengan Claude AI - Baileys",
-  "main": "src/index.js",
   "type": "module",
   "scripts": {
     "start": "node src/index.js"
@@ -13,7 +11,7 @@
     "@hapi/boom": "^10.0.1",
     "dotenv": "^16.4.5",
     "pino": "^9.0.0",
-    "node-cache": "^5.1.2"
+    "qrcode": "^1.5.3"
   },
   "engines": {
     "node": ">=18.0.0"
