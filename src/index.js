@@ -10,7 +10,7 @@ import pino from 'pino';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import qrcode from 'qrcode';
+import qrcode from 'qrcode-terminal';
 import { handleMessage } from './handler.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -34,7 +34,7 @@ async function startBot() {
       keys: makeCacheableSignalKeyStore(state.keys, logger),
     },
     logger,
-    printQRInTerminal: true,
+    printQRInTerminal: false,
     browser: ['WhatsApp AI Bot', 'Chrome', '120.0.0'],
     generateHighQualityLinkPreview: false,
     syncFullHistory: false,
@@ -47,19 +47,19 @@ async function startBot() {
 
     if (qr) {
       console.log('\n==============================');
-      console.log('SCAN QR CODE DI ATAS DENGAN WHATSAPP');
+      console.log('SCAN QR CODE INI DENGAN WHATSAPP:');
       console.log('==============================\n');
-      // Simpan juga sebagai file PNG
-      try {
-        await qrcode.toFile(path.join(__dirname, '../qr.png'), qr, { scale: 8 });
-        console.log('QR juga disimpan sebagai qr.png\n');
-      } catch (e) {}
+      // Print QR besar di terminal
+      qrcode.generate(qr, { small: false });
+      console.log('\nBuka WhatsApp > Settings > Linked Devices > Link a Device');
+      console.log('Arahkan kamera ke QR code di atas\n');
     }
 
     if (connection === 'close') {
       const statusCode = (lastDisconnect?.error instanceof Boom)
         ? lastDisconnect.error.output?.statusCode : null;
       const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
+      console.log('Koneksi terputus, kode: ' + statusCode);
       if (shouldReconnect && retryCount < MAX_RETRY) {
         retryCount++;
         setTimeout(startBot, Math.min(3000 * retryCount, 30000));
@@ -68,7 +68,7 @@ async function startBot() {
       }
     } else if (connection === 'open') {
       retryCount = 0;
-      console.log('Bot terhubung dan siap menerima pesan!');
+      console.log('\n✅ Bot terhubung dan siap menerima pesan!\n');
     }
   });
 
@@ -86,5 +86,3 @@ async function startBot() {
 process.on('uncaughtException', (err) => console.error('Uncaught Exception:', err.message));
 process.on('unhandledRejection', (reason) => console.error('Unhandled Rejection:', reason));
 startBot().catch(console.error);
-
-// fix
