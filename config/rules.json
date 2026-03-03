@@ -1,0 +1,51 @@
+{
+  "system_prompt": "Kamu adalah asisten WhatsApp yang membantu dan ramah. Jawab pertanyaan dengan singkat, jelas, dan dalam Bahasa Indonesia. Jika tidak tahu jawabannya, katakan dengan jujur. Jangan memberikan jawaban terlalu panjang.",
+  "enable_conversation_history": false,
+  "rules": [
+    {
+      "id": "menu_utama",
+      "active": true,
+      "keywords": ["menu", "bantuan", "help", "halo", "hai", "hi", "hello", "mulai", "start"],
+      "response_type": "text",
+      "text": "Halo! Saya asisten otomatis. Berikut yang bisa saya bantu:\n\n📚 Ketik *tugas a* - File Tugas A\n📚 Ketik *tugas b* - File Tugas B\n📚 Ketik *tugas c* - File Tugas C\n\nAtau tanyakan apa saja, saya akan bantu jawab! 🤖"
+    },
+    {
+      "id": "tugas_a",
+      "active": true,
+      "keywords": ["tugas a", "tanya tugas a", "minta tugas a", "kirim tugas a", "tugas-a"],
+      "response_type": "file",
+      "file_path": "files/tugas_a.pdf",
+      "caption": "Berikut file Tugas A untuk kamu! Semangat! 📚"
+    },
+    {
+      "id": "tugas_b",
+      "active": true,
+      "keywords": ["tugas b", "tanya tugas b", "minta tugas b", "kirim tugas b", "tugas-b"],
+      "response_type": "file",
+      "file_path": "files/tugas_b.pdf",
+      "caption": "Berikut file Tugas B untuk kamu! Semangat! 📚"
+    },
+    {
+      "id": "tugas_c",
+      "active": true,
+      "keywords": ["tugas c", "tanya tugas c", "minta tugas c", "kirim tugas c", "tugas-c"],
+      "response_type": "file",
+      "file_path": "files/tugas_c.pdf",
+      "caption": "Berikut file Tugas C untuk kamu! Semangat! 📚"
+    },
+    {
+      "id": "harga",
+      "active": true,
+      "keywords": ["harga", "berapa harga", "price", "biaya", "tarif", "bayar"],
+      "response_type": "text",
+      "text": "Untuk informasi harga, silakan hubungi admin kami langsung. Terima kasih!"
+    },
+    {
+      "id": "jam_operasional",
+      "active": true,
+      "keywords": ["jam buka", "jam operasional", "kapan buka", "buka jam", "tutup jam"],
+      "response_type": "text",
+      "text": "Kami buka setiap Senin-Jumat pukul 08.00-17.00 WIB. Sabtu & Minggu libur."
+    }
+  ]
+}
