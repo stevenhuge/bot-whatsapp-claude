@@ -86,3 +86,5 @@ async function startBot() {
 process.on('uncaughtException', (err) => console.error('Uncaught Exception:', err.message));
 process.on('unhandledRejection', (reason) => console.error('Unhandled Rejection:', reason));
 startBot().catch(console.error);
+
+// fix
